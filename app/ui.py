@@ -75,7 +75,7 @@ scan_gcp = st.sidebar.checkbox(
 )
 
 st.sidebar.info(
-    "Azure and GCP are reported as unconfigured unless their project/subscription "
+    "Azure is reported as unconfigured unless their project/subscription "
     "IDs are supplied to the underlying CLI."
 )
 
