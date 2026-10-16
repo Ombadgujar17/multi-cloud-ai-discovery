@@ -1,0 +1,2 @@
+resource_id,provider,approval_status,owner,approved_service
+MOCK-LAMBDA-003,AWS,approved,Platform Team,Amazon Bedrock

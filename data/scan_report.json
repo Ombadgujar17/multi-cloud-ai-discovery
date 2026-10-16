@@ -1,0 +1,42 @@
+{
+  "scan_timestamp_utc": "2026-10-14T09:14:49.546890+00:00",
+  "mode": "aws",
+  "region": "us-east-1",
+  "coverage": {
+    "aws_lambda": "completed",
+    "aws_lambda_regions_scanned": [
+      "ap-south-1",
+      "eu-north-1",
+      "eu-west-3",
+      "eu-west-2",
+      "eu-west-1",
+      "ap-northeast-3",
+      "ap-northeast-2",
+      "ap-northeast-1",
+      "ca-central-1",
+      "sa-east-1",
+      "ap-southeast-1",
+      "ap-southeast-2",
+      "eu-central-1",
+      "us-east-1",
+      "us-east-2",
+      "us-west-1",
+      "us-west-2"
+    ],
+    "aws_lambda_regions_failed": [],
+    "aws_bedrock": "completed",
+    "azure": "not_configured",
+    "gcp": "not_configured"
+  },
+  "resources_discovered": 1,
+  "resources_with_ai_signals": 1,
+  "potential_shadow_ai_reviews": 1,
+  "warnings": [],
+  "inventory_csv": "data/ai_inventory.csv",
+  "limitations": [
+    "AI signals do not prove runtime model invocation.",
+    "An absent approval record does not prove unauthorized usage.",
+    "Azure and GCP are not scanned by this version.",
+    "Mock mode contains simulated resources, not live findings."
+  ]
+}
