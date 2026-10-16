@@ -45,14 +45,14 @@ st.sidebar.header("Discovery Controls")
 
 scan_mode = st.sidebar.radio(
     "Scan mode",
-    options=["Mock demonstration", "Live AWS scan"],
+    options=["Mock demonstration", "Live scan"],
     help="Mock mode uses sample resources. Live AWS mode uses your configured AWS credentials.",
 )
 
 aws_profile = "multicloud-discovery"
 aws_region = "us-east-1"
 
-if scan_mode == "Live AWS scan":
+if scan_mode == "Live scan":
     aws_profile = st.sidebar.text_input(
         "AWS profile",
         value="multicloud-discovery",
@@ -98,7 +98,7 @@ if run_scan:
         str(REPORT_PATH),
     ]
 
-    if scan_mode == "Live AWS scan":
+    if scan_mode == "Live scan":
         if not aws_profile.strip():
             st.error("Enter your configured AWS profile name.")
             st.stop()

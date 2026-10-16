@@ -1,37 +1,20 @@
 {
-  "scan_timestamp_utc": "2026-10-16T04:43:10.809991+00:00",
+  "scan_timestamp_utc": "2026-10-16T08:53:59.132830+00:00",
   "mode": "aws",
-  "region": "us-east-1",
+  "region": "ap-south-1",
   "coverage": {
-    "aws_lambda": "completed",
-    "aws_lambda_regions_scanned": [
-      "ap-south-1",
-      "eu-north-1",
-      "eu-west-3",
-      "eu-west-2",
-      "eu-west-1",
-      "ap-northeast-3",
-      "ap-northeast-2",
-      "ap-northeast-1",
-      "ca-central-1",
-      "sa-east-1",
-      "ap-southeast-1",
-      "ap-southeast-2",
-      "eu-central-1",
-      "us-east-1",
-      "us-east-2",
-      "us-west-1",
-      "us-west-2"
-    ],
-    "aws_lambda_regions_failed": [],
-    "aws_bedrock": "completed",
+    "aws_lambda": "failed",
+    "aws_bedrock": "failed",
     "azure": "not_configured",
     "gcp": "connected"
   },
-  "resources_discovered": 3,
-  "resources_with_ai_signals": 2,
-  "potential_shadow_ai_reviews": 1,
-  "warnings": [],
+  "resources_discovered": 2,
+  "resources_with_ai_signals": 1,
+  "potential_shadow_ai_reviews": 0,
+  "warnings": [
+    "AWS Lambda region discovery failed: MissingDependencyException: Missing Dependency: Using the login credential provider requires an additional dependency. You will need to pip install \"botocore[crt]\" before proceeding.",
+    "AWS Bedrock discovery failed: MissingDependencyException: Missing Dependency: Using the login credential provider requires an additional dependency. You will need to pip install \"botocore[crt]\" before proceeding."
+  ],
   "inventory_csv": "/Users/ombadgujar/Desktop/multi-cloud-ai-discovery/data/ui_inventory.csv",
   "limitations": [
     "AI signals do not prove runtime model invocation.",

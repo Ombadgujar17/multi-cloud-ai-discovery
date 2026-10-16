@@ -1,108 +1,139 @@
-# Multi-Cloud AI Discovery and Shadow AI Detection
+# ☁️ Multi-Cloud AI Discovery & Shadow AI Detection
 
-## Overview
+An enterprise discovery crawler and governance auditing engine for identifying **Artificial Intelligence (AI) assets** and detecting **Shadow AI** across AWS, Azure, and Google Cloud Platform (GCP).
 
-A Python prototype for discovering AI-related cloud resources and
-identifying resources that may require an AI governance review.
+It discovers direct cloud AI services (Amazon Bedrock, Google Vertex AI, Azure Cognitive Services) and indirect AI integrations in serverless/compute hosts (AWS Lambda, Cloud Run, Azure App Services), cross-referencing findings against an approved register to flag unapproved or unlisted AI usage.
 
-The prototype combines cloud resource metadata, AI-provider signals,
-an approval register, a CSV inventory, and a JSON scan coverage report.
+---
 
-## Current implementation
+## ⚡ Key Highlights
 
-- AWS Lambda discovery using boto3.
-- AWS Bedrock resource discovery for custom models, provisioned
-  throughput, guardrails, agents, and knowledge bases.
-- Heuristic detection of provider endpoints, SDK/configuration clues,
-  and AI-related cloud resources.
-- Comparison against an approved AI inventory.
-- CSV inventory and JSON scan report.
-- Mock mode for offline testing.
-- Azure and GCP connector interfaces, not live discovery.
+- **Multi-Cloud Connectors**: Scans AWS (multi-region Lambda + Bedrock), Azure (Resource Graph KQL), and GCP (Cloud Asset Inventory).
+- **Dual-Detection Engine**: Detects native cloud AI resources as well as indirect integrations (API key names like `OPENAI_API_KEY`, SDK imports, endpoint references).
+- **Zero-Trust Security**: Operates strictly read-only and inspects metadata/variable *names* only—**secret values and tokens are never read or stored**.
+- **Shadow AI Governance**: Automatically flags unapproved/unlisted AI resources as `potential_shadow_ai_review`.
+- **Dual Interfaces**: Interactive Streamlit Web Dashboard + Scriptable CLI.
 
-## Requirements
+---
 
-- Python 3.11 or later
-- boto3
-- python-dotenv
+## 🚀 Quickstart & Setup
 
-Install dependencies in a virtual environment:
+### 1. Installation
 
-    python3 -m venv .venv
-    source .venv/bin/activate
-    pip install boto3 python-dotenv
+```bash
+# Clone and enter directory
+git clone https://github.com/Ombadgujar17/multi-cloud-ai-discovery.git
+cd multi-cloud-ai-discovery
 
-## Run the mock demonstration
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
 
-    python -m src.main --mode mock
+# Install dependencies
+pip install -r requirements.txt
+```
 
-Outputs:
+---
 
-- data/ai_inventory.csv
-- data/scan_report.json
+## 🖥 How to Run
 
-The mock dataset contains five simulated resources. These are fixtures,
-not findings from a real cloud account.
+### Option A: Streamlit Web Dashboard (Recommended)
 
-## Run tests
+Run the interactive dashboard to trigger scans, view KPI cards, filter by risk, inspect resource details, and export reports:
 
-    python -m tests.test_pipeline
-    python -m tests.test_indirect_detection
+```bash
+streamlit run app/ui.py
+```
+*Access the UI at `http://localhost:8501`.*
 
-## Attempt a live AWS scan
+---
 
-Configure an authorized AWS CLI profile or environment credentials
-using your organization's approved process.
+### Option B: Command-Line Interface (CLI)
 
-Then run:
+#### 1. Safe Mock Mode (No cloud credentials required)
+Uses simulated resources to test the entire discovery and governance pipeline offline:
 
-    python -m src.main --mode aws --region ap-south-1
+```bash
+python -m src.main --mode mock
+```
 
-For a named AWS profile:
+#### 2. Live AWS Scan
+Performs multi-region discovery across all active AWS regions:
 
-    python -m src.main --mode aws --region ap-south-1 --profile PROFILE_NAME
+```bash
+# Using default environment credentials
+python -m src.main --mode aws --region us-east-1
 
-The AWS identity needs appropriate read-only permissions for the
-discovery operations. Access failures or unsupported operations may
-result in incomplete coverage; inspect data/scan_report.json.
+# Using a named AWS CLI profile
+python -m src.main --mode aws --region us-east-1 --profile <AWS_PROFILE>
+```
 
-## Outputs and interpretation
+#### 3. Live Multi-Cloud Scan (AWS + GCP / Azure)
+```bash
+# AWS + Google Cloud Platform
+python -m src.main --mode aws --region us-east-1 --gcp-project-id <GCP_PROJECT_ID>
 
-The CSV records resource metadata, AI signals, evidence categories,
-confidence labels, approval status, and review status.
+# AWS + Microsoft Azure
+python -m src.main --mode aws --region us-east-1 --azure-subscription-id <AZURE_SUBSCRIPTION_ID>
+```
 
-The JSON report records scan mode, connector coverage, counts,
-warnings, and known limitations.
+---
 
-A provider endpoint, SDK import, or AI-related resource is a signal;
-it does not by itself prove runtime model invocation.
+## 🧪 Running Tests
 
-An AI resource absent from the approval register is flagged for review.
-It is not automatically proven unauthorized.
+All tests run 100% offline with zero cloud credentials needed:
 
-## Security
+```bash
+# Run full test suite (unittest)
+python -m unittest discover tests
 
-- Do not commit credentials or API keys.
-- The Lambda collector records environment-variable names, not values.
-- The current prototype does not download Lambda source code.
-- Use least-privilege, read-only access for live discovery.
+# Run indirect detection unit tests
+python -m tests.test_indirect_detection
 
-## Known limitations
+# Run standalone detector smoke test
+python test_detector.py
+```
 
-- Live AWS discovery has not yet been validated against an AWS account.
-- Azure and GCP live discovery are not implemented.
-- Runtime invocation and usage frequency are not currently measured.
-- Indirect integration detection is heuristic and can produce false
-  positives or false negatives.
-- Owner tags and resource metadata may be missing.
-- The approval register is a simplified demo inventory.
+---
 
-## Next steps
+## 📊 Output Files
 
-1. Validate AWS discovery in an authorized test account.
-2. Improve scan coverage and permission reporting.
-3. Add stronger, safe evidence collection for indirect integrations.
-4. Implement Azure Resource Graph and GCP Cloud Asset Inventory
-   discovery.
-5. Add runtime usage evidence where authorized logs are available.
-6. Expand automated tests and document the required permissions.
+Every scan writes two output files:
+
+- **`data/ai_inventory.csv`**: Comprehensive 22-column audit inventory (cloud provider, resource ID, owner, tags, detected AI providers, evidence type, confidence, approval status, shadow AI review flag).
+- **`data/scan_report.json`**: Scan health report containing timestamps, connector coverage (scanned/failed regions), resource counts, warnings, and disclosures.
+
+---
+
+## 📂 Project Structure
+
+```
+multi-cloud-ai-discovery/
+├── app/
+│   └── ui.py                   # Streamlit interactive web dashboard
+├── data/
+│   ├── approved_ai_inventory.csv # Approved enterprise baseline register
+│   ├── ai_inventory.csv        # Output CSV inventory
+│   └── scan_report.json        # Output scan coverage report
+├── src/
+│   ├── main.py                 # CLI entrypoint & orchestrator pipeline
+│   ├── connectors/
+│   │   ├── aws/                # AWS Lambda & Bedrock discovery
+│   │   ├── azure/              # Azure Resource Graph KQL discovery
+│   │   └── gcp/                # GCP Cloud Asset Inventory discovery
+│   ├── detectors/
+│   │   ├── ai_signals.py       # Heuristic pattern & endpoint detection
+│   │   └── approval_checker.py # Inventory reconciliation & Shadow AI classifier
+│   └── exporters/
+│       └── csv_exporter.py     # 22-column CSV inventory exporter
+├── tests/
+│   ├── test_indirect_detection.py # Unit tests for indirect signals
+│   └── test_pipeline.py        # Integration tests
+└── requirements.txt            # Dependencies
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
